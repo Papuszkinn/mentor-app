@@ -47,7 +47,7 @@ export default function DashboardPage() {
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
 
   // Fallback avatar
-  const fallbackAvatar = "/cool.png";
+  const fallbackAvatar = "/iconnew.png";
 
   useEffect(() => {
     let mounted = true;

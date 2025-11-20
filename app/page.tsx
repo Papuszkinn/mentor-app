@@ -150,7 +150,7 @@ export default function HomePage() {
           className="mt-20 w-full rounded-3xl overflow-hidden shadow-xl shadow-blue-600/20 border border-white/10"
         >
           <Image
-            src="https://images.unsplash.com/photo-1677434751213-1d6ae2f6c671?auto=format&fit=crop&w=1650&q=80"
+            src="/preview.png"
             alt="dashboard preview"
             width={1600}
             height={900}
