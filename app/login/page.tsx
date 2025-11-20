@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { supabaseBrowser } from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,35 +31,29 @@ export default function LoginPage() {
     try {
       if (isLogin) {
         // LOGOWANIE
-        const { data, error: loginError } = await supabaseBrowser().auth.signInWithPassword({ email, password });
-        console.log("LOGIN DATA:", data, "LOGIN ERROR:", loginError);
+        const { data, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
 
-       if (loginError) {
-  setError(loginError.message);
-  return;
-}
-if (!data.session) {
-  setError("Błędny email lub hasło / konto nieaktywne");
-  return;
-}
+        if (loginError) {
+          setError(loginError.message);
+          return;
+        }
+        if (!data.session) {
+          setError("Błędny email lub hasło / konto nieaktywne");
+          return;
+        }
 
-// dodajemy wait 1s
-setSuccess("Zalogowano pomyślnie!");
-await new Promise(resolve => setTimeout(resolve, 1000));
-
-router.push("/"); // przekierowanie po zalogowaniu
-
+        setSuccess("Zalogowano pomyślnie!");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        router.push("/"); // przekierowanie po zalogowaniu
       } else {
         // REJESTRACJA
-        const { data: signUpData, error: signUpError } = await supabaseBrowser().auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin, // link aktywacyjny w mailu
+            emailRedirectTo: window.location.origin,
           },
         });
-
-        console.log("SIGNUP DATA:", signUpData, "SIGNUP ERROR:", signUpError);
 
         if (signUpError || !signUpData.user) {
           setError(signUpError?.message || "Błąd rejestracji");
@@ -67,7 +61,7 @@ router.push("/"); // przekierowanie po zalogowaniu
         }
 
         // Dodanie do tabeli profiles
-        const { error: profileError } = await supabaseBrowser()
+        const { error: profileError } = await supabase
           .from("profiles")
           .insert({
             id: signUpData.user.id,
@@ -119,11 +113,15 @@ router.push("/"); // przekierowanie po zalogowaniu
             <button
               className={`px-6 py-2 rounded-l-2xl font-semibold transition ${isLogin ? "bg-blue-600 text-white" : "bg-white/10 text-blue-400"}`}
               onClick={() => { setIsLogin(true); setError(""); setSuccess(""); }}
-            >Logowanie</button>
+            >
+              Logowanie
+            </button>
             <button
               className={`px-6 py-2 rounded-r-2xl font-semibold transition ${!isLogin ? "bg-blue-600 text-white" : "bg-white/10 text-blue-400"}`}
               onClick={() => { setIsLogin(false); setError(""); setSuccess(""); }}
-            >Rejestracja</button>
+            >
+              Rejestracja
+            </button>
           </div>
 
           {/* KOMUNIKATY */}

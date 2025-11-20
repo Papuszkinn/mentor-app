@@ -4,21 +4,19 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { supabaseBrowser } from "@/app/lib/supabase";
+import { supabase } from "@/app/lib/supabase";
 
 export default function HomePage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Pobieramy aktualną sesję
-    supabaseBrowser()
-      .auth.getSession()
-      .then(({ data }) => {
-        if (data.session?.user) setUser(data.session.user);
-      });
+    // Pobranie aktualnej sesji
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user) setUser(data.session.user);
+    });
 
     // Subskrypcja zmian sesji (login/logout)
-    const { data: listener } = supabaseBrowser().auth.onAuthStateChange(
+    const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
       }
@@ -51,7 +49,7 @@ export default function HomePage() {
     },
     {
       question: "Czy mogę korzystać z platformy za darmo?",
-      answer: "Skupiamy się na pełnym doświadczeniu premium, aby zapewnić najlepsze wsparcie i efekty..",
+      answer: "Skupiamy się na pełnym doświadczeniu premium, aby zapewnić najlepsze wsparcie i efekty.",
     },
     {
       question: "Czy Ścieżka Rozwoju to platforma która analizuje moje wyniki?",
@@ -72,49 +70,42 @@ export default function HomePage() {
             <span className="text-blue-500">Ścieżka </span> Rozwoju
           </motion.h1>
 
-         <motion.div
-  initial={{ opacity: 0, y: -10 }}
-  animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
-  className="flex items-center gap-4"
->
-  <Link href="#features" className="hover:text-blue-400 transition">
-    Funkcje
-  </Link>
-  <Link href="#pricing" className="hover:text-blue-400 transition">
-    Cennik
-  </Link>
-  <Link href="#faq" className="hover:text-blue-400 transition">
-    FAQ
-  </Link>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
+            className="flex items-center gap-4"
+          >
+            <Link href="#features" className="hover:text-blue-400 transition">Funkcje</Link>
+            <Link href="#pricing" className="hover:text-blue-400 transition">Cennik</Link>
+            <Link href="#faq" className="hover:text-blue-400 transition">FAQ</Link>
 
-  {user ? (
-    <>
-      <Link
-        href="/dashboard"
-        className="ml-4 px-5 py-2 rounded-xl bg-green-600 hover:bg-green-700 transition shadow-lg shadow-green-600/30"
-      >
-        Panel
-      </Link>
-      <button
-        onClick={async () => {
-          await supabaseBrowser().auth.signOut();
-          setUser(null);
-        }}
-        className="ml-2 px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 transition shadow-lg shadow-red-600/30 text-white"
-      >
-        Wyloguj się
-      </button>
-    </>
-  ) : (
-    <Link
-      href="/login"
-      className="ml-4 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition shadow-lg shadow-blue-600/30"
-    >
-      Logowanie
-    </Link>
-  )}
-</motion.div>
-
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="ml-4 px-5 py-2 rounded-xl bg-green-600 hover:bg-green-700 transition shadow-lg shadow-green-600/30"
+                >
+                  Panel
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    setUser(null);
+                  }}
+                  className="ml-2 px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 transition shadow-lg shadow-red-600/30 text-white"
+                >
+                  Wyloguj się
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="ml-4 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition shadow-lg shadow-blue-600/30"
+              >
+                Logowanie
+              </Link>
+            )}
+          </motion.div>
         </div>
       </nav>
 
@@ -126,7 +117,7 @@ export default function HomePage() {
           transition={{ duration: 0.6 }}
           className="text-5xl md:text-6xl font-extrabold leading-tight"
         >
-          Twój <span className="text-blue-500"> Umysł </span>Twój <span className="text-blue-500">Plan </span> 
+          Twój <span className="text-blue-500">Umysł </span>Twój <span className="text-blue-500">Plan </span>
         </motion.h2>
 
         <motion.p
