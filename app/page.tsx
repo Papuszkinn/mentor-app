@@ -32,29 +32,29 @@ export default function HomePage() {
   const features = [
     {
       title: "Inteligentne Mentorowanie",
-      desc: "System analizuje potrzeby użytkownika i dopasowuje plan działań.",
+      desc: "Twój plan rozwoju dopasowany do Ciebie i Twoich celów.",
     },
     {
       title: "Kreator ścieżek rozwoju",
-      desc: "Wsparcie w nauce tradingu, programowania, biznesu lub dowolnego tematu.",
+      desc: "Ucz się tego, co naprawdę ważne, i rozwijaj się w swoim tempie.",
     },
     {
-      title: "Pełna integracja z OpenAI",
-      desc: "Nowoczesny chat z Twoim personalnym mentorem opartym o GPT-5.",
+      title: "Twoja prawa ręka",
+      desc: "Wsparcie w każdej decyzji i każdej lekcji — zawsze pod ręką.",
     },
   ];
 
   const faqs = [
     {
-      question: "Jak zacząć korzystać z Mentora AI?",
+      question: "Jak zacząć korzystać?",
       answer: "Wystarczy zarejestrować się, wybrać ścieżkę rozwoju i rozpocząć naukę krok po kroku.",
     },
     {
       question: "Czy mogę korzystać z platformy za darmo?",
-      answer: "Tak, mamy wersję podstawową dostępną bez opłat, a także plan premium z dodatkowymi funkcjami.",
+      answer: "Skupiamy się na pełnym doświadczeniu premium, aby zapewnić najlepsze wsparcie i efekty..",
     },
     {
-      question: "Czy Mentor AI analizuje moje wyniki?",
+      question: "Czy Ścieżka Rozwoju to platforma która analizuje moje wyniki?",
       answer: "Tak, system automatycznie śledzi Twoje postępy i daje spersonalizowane rekomendacje.",
     },
   ];
@@ -69,7 +69,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-2xl font-bold tracking-tight"
           >
-            <span className="text-blue-500">MENTOR</span> AI
+            <span className="text-blue-500">Ścieżka </span> Rozwoju
           </motion.h1>
 
          <motion.div
@@ -126,7 +126,7 @@ export default function HomePage() {
           transition={{ duration: 0.6 }}
           className="text-5xl md:text-6xl font-extrabold leading-tight"
         >
-          Twój własny <span className="text-blue-500">Mentor AI</span>, dostępny 24/7.
+          Twój <span className="text-blue-500"> Umysł </span>Twój <span className="text-blue-500">Plan </span> 
         </motion.h2>
 
         <motion.p
@@ -135,7 +135,7 @@ export default function HomePage() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="text-lg md:text-xl mt-6 text-neutral-300"
         >
-          Platforma stworzona, aby prowadzić użytkownika krok po kroku — trading, rozwój, edukacja, technologia. Wszystko w jednym miejscu.
+          Od pomysłu do mistrzostwa — wszystko w jednym miejscu.
         </motion.p>
 
         <motion.div
@@ -199,7 +199,7 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="text-4xl font-bold"
         >
-          Zacznij w minutę. Zmieniaj swoje życie codziennie.
+          Zacznij w minutę. Zmień swoje życie.
         </motion.h3>
 
         <motion.div
