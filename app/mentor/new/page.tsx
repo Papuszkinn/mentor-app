@@ -254,8 +254,8 @@ export default function NewMentorChatPage() {
       <header className="fixed left-0 right-0 top-0 z-50 backdrop-blur-xl bg-black/30 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-lg font-bold text-blue-400">MENTOR AI</h1>
-            <p className="text-sm text-neutral-400">Testowy chat</p>
+            <span className="text-blue-400">Ścieżka</span>Rozwoju
+            
           </div>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm hover:text-blue-300 transition">Strona główna</Link>
@@ -272,7 +272,7 @@ export default function NewMentorChatPage() {
               <img src={defaultAvatar} alt="avatar" className="w-12 h-12 rounded-full object-cover border border-white/10" />
               <div>
                 <div className="font-semibold">{username || "Guest"}</div>
-                <div className="text-sm text-neutral-400">Testowy czat</div>
+                
               </div>
             </div>
 
@@ -318,7 +318,7 @@ export default function NewMentorChatPage() {
               <textarea
                 value={newChatPrompt}
                 onChange={e => setNewChatPrompt(e.target.value)}
-                placeholder="Prompt systemowy / opis chatu"
+                placeholder="Charakter konwersacji"
                 rows={4}
                 className="w-full px-3 py-2 rounded-md bg-white/5 border border-white/10 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
               />

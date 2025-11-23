@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
+import { sign } from "crypto";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function LoginPage() {
             emailRedirectTo: window.location.origin,
           },
         });
-
+           
         if (signUpError || !signUpData.user) {
           setError(signUpError?.message || "Błąd rejestracji");
           return;
@@ -145,13 +146,7 @@ export default function LoginPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
-                <input
-                  type="text"
-                  placeholder="Avatar URL (opcjonalnie)"
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                />
+
               </>
             )}
             <input

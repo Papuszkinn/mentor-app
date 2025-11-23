@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react"; // <-- POPRAWNY IMPORT
 
 type Profile = {
   id: string;
@@ -31,8 +32,7 @@ export default function DashboardEdit() {
 
   const [canChangeUsername, setCanChangeUsername] = useState(true);
 
-  // Stały, klasyczny avatar dla wszystkich
-  const fallbackAvatar = "/cool.png";
+  const fallbackAvatar = "/iconnew.png";
 
   useEffect(() => {
     let mounted = true;
@@ -78,7 +78,6 @@ export default function DashboardEdit() {
     setError("");
     setSuccess("");
 
-    // WALIDACJA HASEŁ
     if (newPassword || confirmPassword) {
       if (!oldPassword) {
         setError("Wpisz aktualne hasło, aby zmienić nowe.");
@@ -100,7 +99,6 @@ export default function DashboardEdit() {
       }
     }
 
-    // Zmiana email
     if (email && email !== profile?.email) {
       const { error: emailError } = await supabase.auth.updateUser({ email });
       if (emailError) {
@@ -109,7 +107,6 @@ export default function DashboardEdit() {
       }
     }
 
-    // Zmiana username (tylko co tydzień)
     if (username && username !== profile?.username) {
       if (!canChangeUsername) {
         setError("Możesz zmienić nazwę użytkownika tylko raz na tydzień.");
@@ -149,9 +146,8 @@ export default function DashboardEdit() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold tracking-tight">
-              <span className="text-blue-400">MENTOR</span> AI
+              <span className="text-blue-400">Ścieżka</span> Rozwoju
             </h2>
-            <p className="text-sm text-neutral-400">Edytuj profil</p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -167,12 +163,10 @@ export default function DashboardEdit() {
           {error && <p className="text-red-500">{error}</p>}
           {success && <p className="text-green-500">{success}</p>}
 
-          {/* AVATAR STATYCZNY */}
           <div className="flex items-center gap-4">
             <img src={fallbackAvatar} alt="Avatar" className="w-16 h-16 rounded-full border border-white/10 object-cover"/>
           </div>
 
-          {/* EMAIL */}
           <div>
             <label className="block text-sm text-neutral-400 mb-1">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
@@ -180,7 +174,6 @@ export default function DashboardEdit() {
             />
           </div>
 
-          {/* USERNAME */}
           <div>
             <label className="block text-sm text-neutral-400 mb-1">Nazwa użytkownika { !canChangeUsername && "(tylko raz na tydzień)"}</label>
             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
@@ -189,21 +182,29 @@ export default function DashboardEdit() {
             />
           </div>
 
-          {/* HASŁO */}
+          {/* HASLA */}
           <div className="space-y-2">
             <label className="block text-sm text-neutral-400 mb-1">Zmiana hasła</label>
+
             <div className="flex items-center gap-2">
               <input type={showPasswords ? "text" : "password"} placeholder="Aktualne hasło" value={oldPassword} onChange={e => setOldPassword(e.target.value)}
                 className="w-full px-4 py-2 rounded-xl bg-white/10 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"/>
             </div>
+
             <div className="flex items-center gap-2">
               <input type={showPasswords ? "text" : "password"} placeholder="Nowe hasło" value={newPassword} onChange={e => setNewPassword(e.target.value)}
                 className="w-full px-4 py-2 rounded-xl bg-white/10 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"/>
-              <button type="button" onClick={() => setShowPasswords(!showPasswords)}
-                className="px-3 py-2 bg-white/10 rounded-md hover:bg-white/20 transition">
-                {showPasswords ? "🙈" : "👁️"}
+
+              {/* POPRAWIONY BUTTON */}
+              <button
+                type="button"
+                onClick={() => setShowPasswords(!showPasswords)}
+                className="px-3 py-2 bg-white/10 rounded-md hover:bg-white/20 transition"
+              >
+                {showPasswords ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+
             <div className="flex items-center gap-2">
               <input type={showPasswords ? "text" : "password"} placeholder="Powtórz nowe hasło" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-2 rounded-xl bg-white/10 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"/>

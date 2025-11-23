@@ -135,7 +135,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold tracking-tight">
-              <span className="text-blue-400">MENTOR</span> AI
+              <span className="text-blue-400">Ścieżka</span> Rozwoju
             </h2>
             <p className="text-sm text-neutral-400">Panel użytkownika</p>
           </div>
@@ -232,7 +232,7 @@ export default function DashboardPage() {
                 transition={{ delay: 0.1 }}
                 className="p-6 rounded-2xl bg-white/5 border border-white/10 shadow-lg"
               >
-                <h4 className="font-semibold text-lg">Użycie tokenów</h4>
+                <h4 className="font-semibold text-lg">Ilość wiadomości pozostałych do wysłania</h4>
                 <div className="mt-3">
                   {tokens ? (
                     <>
@@ -261,34 +261,13 @@ export default function DashboardPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-sm text-neutral-500">Brak danych o tokenach.</div>
+                    <div className="text-sm text-neutral-500">Brak danych.</div>
                   )}
                 </div>
               </motion.div>
 
               {/* ONBOARDING */}
-              <motion.div className="p-6 rounded-2xl bg-white/5 border border-white/10 shadow-lg">
-                <h4 className="font-semibold text-lg">Onboarding</h4>
-                <div className="mt-3 text-sm text-neutral-300">
-                  {onboardingStep === null ? (
-                    "Brak danych onboardingowych."
-                  ) : onboardingStep >= 3 ? (
-                    <span className="text-green-400 font-semibold">
-                      Zakończony (step {onboardingStep})
-                    </span>
-                  ) : (
-                    <span className="text-yellow-300">
-                      W trakcie (step {onboardingStep})
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-4">
-                  <Link href="/onboarding" className="px-4 py-2 rounded-md bg-blue-600 text-sm">
-                    Kontynuuj onboarding
-                  </Link>
-                </div>
-              </motion.div>
+             
             </section>
 
             {/* ===== ŚRODKOWA KOLUMNA ===== */}
@@ -382,7 +361,7 @@ export default function DashboardPage() {
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 rounded-lg bg-white/10 hover:bg-white/20 transition text-left">
                     <div className="text-xs text-neutral-300">Nowa sesja</div>
-                    <div className="font-semibold mt-1">Stwórz sesję z celem</div>
+                    <div className="font-semibold mt-1">Stwórz sesję</div>
                   </button>
 
                   <button className="p-4 rounded-lg bg-white/10 hover:bg-white/20 transition text-left">
