@@ -19,6 +19,13 @@ type ChatSession = {
   system_prompt: string;
 };
 
+type Subscription = {
+  plan: string;
+  status: string;
+  max_messages: number;
+  messages_used: number;
+};
+
 export default function NewMentorChatPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -35,6 +42,8 @@ export default function NewMentorChatPage() {
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
   const [currentText, setCurrentText] = useState("Zacznij działać!");
   const [totalUserMessages, setTotalUserMessages] = useState(0);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [canSendMessages, setCanSendMessages] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const defaultAvatar = "/iconnew.png";
@@ -81,6 +90,27 @@ export default function NewMentorChatPage() {
       setChatList(chats ?? []);
       if (chats?.length) loadChat(chats[0]);
 
+      // Pobierz subskrypcję
+const { data: subData } = await supabase
+  .from("user_subscriptions")
+  .select("plan, status, max_messages, messages_used")
+  .eq("user_id", user.id)
+  .single();
+
+setSubscription(subData ?? null);
+
+if (subData) {
+  const plan = subData.plan.replace(/['"]/g, "");
+  const status = subData.status.replace(/['"]/g, "");
+  const canSend = status === "active" && (subData.max_messages ?? 0) - (subData.messages_used ?? 0) > 0;
+
+  setCanSendMessages(canSend); // <--- to jest kluczowe
+} else {
+  setCanSendMessages(false);
+}
+
+
+
       // Pobierz całkowitą liczbę wiadomości użytkownika
       const { count } = await supabase
         .from("ai_messages")
@@ -112,6 +142,15 @@ export default function NewMentorChatPage() {
         message_type: type,
         content,
       });
+      if (type === "user" && subscription) {
+        // Aktualizacja liczby użytych wiadomości w subskrypcji
+        await supabase
+          .from("user_subscriptions")
+          .update({ messages_used: subscription.messages_used + 1 })
+          .eq("user_id", userId);
+        setSubscription(prev => prev ? { ...prev, messages_used: prev.messages_used + 1 } : prev);
+        setCanSendMessages(subscription.messages_used + 1 < subscription.max_messages);
+      }
     } catch (e) { console.error(e); }
   };
 
@@ -172,14 +211,14 @@ export default function NewMentorChatPage() {
 
   // --- HANDLE SEND ---
   const handleSend = async () => {
-    if (!input.trim() || isSending || !sessionUserId || !chatSession) return;
+    if (!input.trim() || isSending || !sessionUserId || !chatSession || !canSendMessages) return;
+
     setIsSending(true);
     const userText = input.trim();
     setMessages(prev => [...prev, { message_type: "user", content: userText, created_at: new Date().toISOString() }]);
     setInput("");
     await persistMessage(sessionUserId, "user", userText);
 
-    // Aktualizacja całkowitej liczby wiadomości użytkownika
     setTotalUserMessages(prev => prev + 1);
 
     try {
@@ -215,7 +254,6 @@ export default function NewMentorChatPage() {
     router.push("/login");
   };
 
-  // --- JSX ---
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black via-neutral-900 to-black">
@@ -255,7 +293,6 @@ export default function NewMentorChatPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-blue-400">Ścieżka</span>Rozwoju
-            
           </div>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm hover:text-blue-300 transition">Strona główna</Link>
@@ -272,7 +309,7 @@ export default function NewMentorChatPage() {
               <img src={defaultAvatar} alt="avatar" className="w-12 h-12 rounded-full object-cover border border-white/10" />
               <div>
                 <div className="font-semibold">{username || "Guest"}</div>
-                
+                {subscription && <div className="text-xs text-neutral-400">{subscription.plan} • {subscription.status}</div>}
               </div>
             </div>
 
@@ -284,25 +321,6 @@ export default function NewMentorChatPage() {
                     className={`flex-1 text-left px-3 py-2 rounded-md transition ${chatSession?.id === c.id ? "bg-blue-600/60" : "bg-white/5 hover:bg-white/10"}`}
                   >
                     {c.title}
-                  </button>
-                  <button
-                    onClick={async () => {
-                      if (!sessionUserId) return;
-                      const confirmDelete = confirm(`Usunąć chat "${c.title}" i wszystkie jego wiadomości?`);
-                      if (!confirmDelete) return;
-                      await supabase.from("ai_messages").delete().eq("chat_session_id", c.id);
-                      await supabase.from("chat_sessions").delete().eq("id", c.id);
-                      setChatList(prev => prev.filter(ch => ch.id !== c.id));
-                      if (chatSession?.id === c.id) {
-                        const remaining = chatList.filter(ch => ch.id !== c.id);
-                        if (remaining.length) loadChat(remaining[0]);
-                        else { setChatSession(null); setMessages([]); }
-                      }
-                    }}
-                    className="ml-2 text-red-400 hover:text-red-600 transition px-2 py-1 rounded-md"
-                    title="Usuń chat"
-                  >
-                    🗑️
                   </button>
                 </div>
               ))}
@@ -360,14 +378,14 @@ export default function NewMentorChatPage() {
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                    placeholder="Napisz wiadomość..."
+                    placeholder={canSendMessages ? "Napisz wiadomość..." : "Nie możesz pisać — brak subskrypcji lub wiadomości"}
                     className="flex-1 px-4 py-3 rounded-2xl bg-white/5 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    disabled={isSending || !chatSession}
+                    disabled={isSending || !chatSession || !canSendMessages}
                   />
                   <button
                     onClick={handleSend}
                     className="px-4 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 transition disabled:opacity-60"
-                    disabled={isSending || !chatSession}
+                    disabled={isSending || !chatSession || !canSendMessages}
                   >
                     {isSending ? "Wysyłam..." : "Wyślij"}
                   </button>

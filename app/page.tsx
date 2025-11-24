@@ -45,15 +45,18 @@ export default function HomePage() {
   const faqs = [
     {
       question: "Jak zacząć korzystać?",
-      answer: "Wystarczy zarejestrować się, wybrać ścieżkę rozwoju i rozpocząć naukę krok po kroku.",
+      answer:
+        "Wystarczy zarejestrować się, wybrać ścieżkę rozwoju i rozpocząć naukę krok po kroku.",
     },
     {
       question: "Czy mogę korzystać z platformy za darmo?",
-      answer: "Skupiamy się na pełnym doświadczeniu premium, aby zapewnić najlepsze wsparcie i efekty.",
+      answer:
+        "Skupiamy się na pełnym doświadczeniu premium, aby zapewnić najlepsze wsparcie i efekty.",
     },
     {
       question: "Czy Ścieżka Rozwoju to platforma która analizuje moje wyniki?",
-      answer: "Tak, system automatycznie śledzi Twoje postępy i daje spersonalizowane rekomendacje.",
+      answer:
+        "Tak, system automatycznie śledzi Twoje postępy i daje spersonalizowane rekomendacje.",
     },
   ];
 
@@ -75,9 +78,15 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
             className="flex items-center gap-4"
           >
-            <Link href="#features" className="hover:text-blue-400 transition">Funkcje</Link>
-            <Link href="#pricing" className="hover:text-blue-400 transition">Cennik</Link>
-            <Link href="#faq" className="hover:text-blue-400 transition">FAQ</Link>
+            <Link href="#features" className="hover:text-blue-400 transition">
+              Funkcje
+            </Link>
+            <Link href="#pricing" className="hover:text-blue-400 transition">
+              Cennik
+            </Link>
+            <Link href="#faq" className="hover:text-blue-400 transition">
+              FAQ
+            </Link>
 
             {user ? (
               <>
@@ -117,7 +126,8 @@ export default function HomePage() {
           transition={{ duration: 0.6 }}
           className="text-5xl md:text-6xl font-extrabold leading-tight"
         >
-          Twój <span className="text-blue-500">Umysł </span>Twój <span className="text-blue-500">Plan </span>
+          Twój <span className="text-blue-500">Umysł </span>Twój{" "}
+          <span className="text-blue-500">Plan </span>
         </motion.h2>
 
         <motion.p
@@ -175,10 +185,124 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="bg-white/5 p-8 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-2 hover:bg-white/10 transition"
           >
-            <h3 className="text-2xl mb-3 font-semibold text-blue-400">{f.title}</h3>
+            <h3 className="text-2xl mb-3 font-semibold text-blue-400">
+              {f.title}
+            </h3>
             <p className="text-neutral-300 text-lg">{f.desc}</p>
           </motion.div>
         ))}
+      </section>
+
+      {/* PRICING */}
+      <section id="pricing" className="max-w-7xl mx-auto px-6 py-32">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-bold text-center mb-20"
+        >
+          Cennik
+        </motion.h2>
+
+        <div className="grid md:grid-cols-3 gap-12">
+          {/* MINI */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="relative bg-white/5 p-10 rounded-3xl border border-white/10 shadow-xl hover:bg-white/10 transition"
+          >
+            <h3 className="text-2xl font-semibold text-blue-400">Mini</h3>
+            <p className="text-neutral-300 mt-3 text-lg">
+              Podstawowy zestaw narzędzi do lekkiego startu w rozwój osobisty.
+            </p>
+
+            <p className="text-4xl font-bold mt-6">
+              39.99 <span className="text-xl">zł / mies</span>
+            </p>
+
+            <button
+              onClick={() => {
+                if (!user) window.location.href = "/register";
+                else window.location.href = "/payment?plan=mini";
+              }}
+              className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
+            >
+              Wybieram ten
+            </button>
+          </motion.div>
+
+          {/* STANDARD */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="relative bg-white/10 p-10 rounded-3xl border border-blue-500/40 shadow-2xl shadow-blue-600/20 transition"
+          >
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 px-4 py-1 text-sm rounded-full shadow-md">
+              Najczęściej wybierane
+            </div>
+
+            <h3 className="text-2xl font-semibold text-blue-400">Standard</h3>
+            <p className="text-neutral-300 mt-3 text-lg">
+              Idealny balans funkcji i ceny. Wszystko czego potrzebujesz, żeby
+              rosnąć szybko.
+            </p>
+
+            <p className="text-4xl font-bold mt-6">
+              59.99 <span className="text-xl">zł / mies</span>
+            </p>
+
+            <button
+              onClick={() => {
+                if (!user) window.location.href = "/register";
+                else window.location.href = "/payment?plan=standard";
+              }}
+              className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
+            >
+              Wybieram ten
+            </button>
+          </motion.div>
+
+          {/* PREMIUM */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="relative bg-white/5 p-10 rounded-3xl border border-yellow-500/40 shadow-xl hover:bg-white/10 transition"
+          >
+            <div className="absolute top-4 right-4 bg-yellow-600 text-black px-3 py-1 text-sm rounded-md shadow-md">
+              -20%
+            </div>
+
+            <h3 className="text-2xl font-semibold text-blue-400">Premium</h3>
+            <p className="text-neutral-300 mt-3 text-lg">
+              Pełen dostęp do AI, priorytetowe funkcje i maksymalne tempo
+              rozwoju.
+            </p>
+
+            <p className="text-4xl font-bold mt-6">
+              89.99 <span className="text-xl">zł / mies</span>
+            </p>
+
+            <button
+              onClick={() => {
+                if (!user) window.location.href = "/register";
+                else window.location.href = "/payment?plan=premium";
+              }}
+              className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
+            >
+              Wybieram ten
+            </button>
+          </motion.div>
+        </div>
       </section>
 
       {/* CTA */}
@@ -224,7 +348,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="bg-white/5 p-8 rounded-2xl border border-white/10 shadow-xl hover:-translate-y-2 hover:bg-white/10 transition"
           >
-            <h3 className="text-2xl mb-3 font-semibold text-blue-400">{f.question}</h3>
+            <h3 className="text-2xl mb-3 font-semibold text-blue-400">
+              {f.question}
+            </h3>
             <p className="text-neutral-300 text-lg">{f.answer}</p>
           </motion.div>
         ))}
