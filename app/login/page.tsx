@@ -93,7 +93,7 @@ export default function LoginPage() {
       <nav className="w-full fixed top-0 backdrop-blur-xl bg-black/30 border-b border-white/10 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-2xl font-bold tracking-tight">
-            <span className="text-blue-500">Ścieżka </span>Rozwoju
+            <span className="text-blue-500">Ścieżka </span>Umysłu
           </motion.h1>
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }} className="flex items-center gap-6">
             <Link href="/" className="hover:text-blue-400 transition font-semibold">Strona główna</Link>

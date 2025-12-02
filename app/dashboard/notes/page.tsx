@@ -97,7 +97,7 @@ export default function NotesPage() {
       <header className="fixed left-0 right-0 top-0 z-50 backdrop-blur-xl bg-black/30 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-blue-400">Ścieżka</span>Rozwoju
+            <span className="text-blue-400">Ścieżka</span>Umysłu
           </div>
           <div className="flex items-center gap-4">
             <Link href="/" className="text-sm hover:text-blue-300 transition">Strona główna</Link>

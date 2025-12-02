@@ -70,7 +70,7 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-2xl font-bold tracking-tight"
           >
-            <span className="text-blue-500">Ścieżka </span> Rozwoju
+            <span className="text-blue-500">Ścieżka </span> Umysłu
           </motion.h1>
 
           <motion.div
