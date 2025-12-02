@@ -137,7 +137,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/mentor" className="text-sm hover:text-blue-300 transition">Mentor</Link>
+            <Link href="/" className="text-sm hover:text-blue-300 transition">Strona Główna</Link>
             <button onClick={handleSignOut} className="px-3 py-1 rounded-lg bg-red-600/80 hover:bg-red-600 transition text-sm">Wyloguj</button>
           </div>
         </div>
@@ -281,16 +281,16 @@ export default function DashboardPage() {
 
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 rounded-lg bg-white/10 hover:bg-white/20 transition text-left">
-                    <div className="text-xs text-neutral-300">Nowa sesja</div>
-                    <div className="font-semibold mt-1">Stwórz sesję</div>
+                    <div className="text-xs text-neutral-300">AKTUALIZACJA</div>
+                    <div className="font-semibold mt-1">AKTUALIZACJA</div>
                   </button>
                   <button className="p-4 rounded-lg bg-white/10 hover:bg-white/20 transition text-left">
-                    <div className="text-xs text-neutral-300">Szybkie zadanie</div>
-                    <div className="font-semibold mt-1">Wygeneruj checklistę</div>
+                    <div className="text-xs text-neutral-300">AKTUALIZACJA</div>
+                    <div className="font-semibold mt-1">AKTUALIZACJA</div>
                   </button>
                   <button className="p-4 rounded-lg bg-white/10 hover:bg-white/20 transition text-left">
-                    <div className="text-xs text-neutral-300">Eksport</div>
-                    <div className="font-semibold mt-1">Eksport PDF</div>
+                    <div className="text-xs text-neutral-300">AKTUALIZACJA</div>
+                    <div className="font-semibold mt-1">AKTUALIZACJA</div>
                   </button>
                 </div>
               </motion.div>
