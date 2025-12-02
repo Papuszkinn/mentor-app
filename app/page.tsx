@@ -226,7 +226,7 @@ export default function HomePage() {
 
             <button
               onClick={() => {
-                if (!user) window.location.href = "/register";
+                if (!user) window.location.href = "/login";
                 else window.location.href = "/payment?plan=mini";
               }}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
@@ -260,7 +260,7 @@ export default function HomePage() {
 
             <button
               onClick={() => {
-                if (!user) window.location.href = "/register";
+                if (!user) window.location.href = "/login";
                 else window.location.href = "/payment?plan=standard";
               }}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
@@ -294,7 +294,7 @@ export default function HomePage() {
 
             <button
               onClick={() => {
-                if (!user) window.location.href = "/register";
+                if (!user) window.location.href = "/login";
                 else window.location.href = "/payment?plan=premium";
               }}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"

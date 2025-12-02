@@ -90,33 +90,29 @@ export default function NewMentorChatPage() {
       setChatList(chats ?? []);
       if (chats?.length) loadChat(chats[0]);
 
-      // Pobierz subskrypcję
-const { data: subData } = await supabase
-  .from("user_subscriptions")
-  .select("plan, status, max_messages, messages_used")
-  .eq("user_id", user.id)
-  .single();
+      const { data: subData } = await supabase
+        .from("user_subscriptions")
+        .select("plan, status, max_messages, messages_used")
+        .eq("user_id", user.id)
+        .single();
 
-setSubscription(subData ?? null);
+      setSubscription(subData ?? null);
 
-if (subData) {
-  const plan = subData.plan.replace(/['"]/g, "");
-  const status = subData.status.replace(/['"]/g, "");
-  const canSend = status === "active" && (subData.max_messages ?? 0) - (subData.messages_used ?? 0) > 0;
+      if (subData) {
+        const plan = subData.plan.replace(/['"]/g, "");
+        const status = subData.status.replace(/['"]/g, "");
+        const canSend = status === "active" && (subData.max_messages ?? 0) - (subData.messages_used ?? 0) > 0;
+        setCanSendMessages(canSend);
+      } else {
+        setCanSendMessages(false);
+      }
 
-  setCanSendMessages(canSend); // <--- to jest kluczowe
-} else {
-  setCanSendMessages(false);
-}
-
-
-
-      // Pobierz całkowitą liczbę wiadomości użytkownika
       const { count } = await supabase
         .from("ai_messages")
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id)
         .eq("message_type", "user");
+
       setTotalUserMessages(count ?? 0);
 
       setShowLoadingScreen(false);
@@ -143,11 +139,11 @@ if (subData) {
         content,
       });
       if (type === "user" && subscription) {
-        // Aktualizacja liczby użytych wiadomości w subskrypcji
         await supabase
           .from("user_subscriptions")
           .update({ messages_used: subscription.messages_used + 1 })
           .eq("user_id", userId);
+
         setSubscription(prev => prev ? { ...prev, messages_used: prev.messages_used + 1 } : prev);
         setCanSendMessages(subscription.messages_used + 1 < subscription.max_messages);
       }
@@ -169,6 +165,30 @@ if (subData) {
 
     if (fetchErr) console.warn(fetchErr.message);
     setMessages(msgs ?? []);
+  };
+
+  // --- DELETE CHAT ---
+  const deleteChat = async (chatId: string) => {
+    if (!sessionUserId) return;
+
+    await supabase
+      .from("ai_messages")
+      .delete()
+      .eq("chat_session_id", chatId)
+      .eq("user_id", sessionUserId);
+
+    await supabase
+      .from("chat_sessions")
+      .delete()
+      .eq("id", chatId)
+      .eq("user_id", sessionUserId);
+
+    setChatList(prev => prev.filter(c => c.id !== chatId));
+
+    if (chatSession?.id === chatId) {
+      setChatSession(null);
+      setMessages([]);
+    }
   };
 
   // --- CREATE NEW CHAT ---
@@ -315,12 +335,22 @@ if (subData) {
 
             <div className="mt-4 space-y-2 max-h-64 overflow-auto">
               {chatList.map(c => (
-                <div key={c.id} className="flex items-center justify-between">
+                <div key={c.id} className="flex items-center justify-between gap-2">
                   <button
                     onClick={() => loadChat(c)}
-                    className={`flex-1 text-left px-3 py-2 rounded-md transition ${chatSession?.id === c.id ? "bg-blue-600/60" : "bg-white/5 hover:bg-white/10"}`}
+                    className={`flex-1 text-left px-3 py-2 rounded-md transition ${
+                      chatSession?.id === c.id ? "bg-blue-600/60" : "bg-white/5 hover:bg-white/10"
+                    }`}
                   >
                     {c.title}
+                  </button>
+
+                  <button
+                    onClick={() => deleteChat(c.id)}
+                    className="text-red-400 hover:text-red-300 text-lg px-2"
+                    title="Usuń chat"
+                  >
+                    🗑️
                   </button>
                 </div>
               ))}

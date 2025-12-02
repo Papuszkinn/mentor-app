@@ -179,13 +179,12 @@ export default function NotesPage() {
                   <button onClick={() => setOpenNote(null)} className="text-red-400 hover:text-red-600">✖</button>
                 </div>
                 <textarea
-  ref={textAreaRef}
-  value={openNote.content}
-  onChange={e => updateNoteContent(openNote.id, e.target.value)}
-  placeholder="Tutaj możesz pisać swoje przemyślenia..."
-  className="w-full h-64 p-3 rounded-md bg-white/5 border border-white/10 text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
-/>
-
+                      ref={textAreaRef}
+                      onChange={e => updateNoteContent(openNote.id, e.target.value)}
+                      placeholder="Tutaj możesz pisać swoje przemyślenia..."
+                      className="w-full h-64 p-3 rounded-md bg-white/5 border border-white/10 text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
+                      value={openNote.content}
+                      />
               </motion.div>
             </motion.div>
           )}
