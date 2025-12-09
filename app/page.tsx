@@ -10,12 +10,10 @@ export default function HomePage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Pobranie aktualnej sesji
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user) setUser(data.session.user);
     });
 
-    // Subskrypcja zmian sesji (login/logout)
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
@@ -59,6 +57,41 @@ export default function HomePage() {
         "Tak, system automatycznie śledzi Twoje postępy i daje spersonalizowane rekomendacje.",
     },
   ];
+
+  // --------------------------
+  // Funkcja do Stripe Checkout
+  // --------------------------
+ const buyPlan = async (plan: "mini" | "standard" | "premium") => {
+  if (!user) {
+    window.location.href = "/login";
+    return;
+  }
+
+  try {
+    console.log("Tworzenie sesji Stripe dla planu:", plan, "użytkownik:", user.id);
+
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plan, userId: user.id }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.url) {
+      // przekierowanie do Stripe Checkout
+      window.location.href = data.url;
+    } else {
+      console.error("Błąd przy tworzeniu sesji:", data.error);
+      alert("Nie udało się utworzyć sesji płatności. Spróbuj ponownie.");
+    }
+  } catch (err) {
+    console.error("Błąd przy wywołaniu API checkout:", err);
+    alert("Wystąpił błąd połączenia z serwerem.");
+  }
+};
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-neutral-900 to-black text-white">
@@ -193,7 +226,9 @@ export default function HomePage() {
         ))}
       </section>
 
+      {/* --------------------------- */}
       {/* PRICING */}
+      {/* --------------------------- */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-32">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -225,10 +260,7 @@ export default function HomePage() {
             </p>
 
             <button
-              onClick={() => {
-                if (!user) window.location.href = "/login";
-                else window.location.href = "/payment?plan=mini";
-              }}
+              onClick={() => buyPlan("mini")}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
             >
               Wybieram ten
@@ -259,10 +291,7 @@ export default function HomePage() {
             </p>
 
             <button
-              onClick={() => {
-                if (!user) window.location.href = "/login";
-                else window.location.href = "/payment?plan=standard";
-              }}
+              onClick={() => buyPlan("standard")}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
             >
               Wybieram ten
@@ -293,10 +322,7 @@ export default function HomePage() {
             </p>
 
             <button
-              onClick={() => {
-                if (!user) window.location.href = "/login";
-                else window.location.href = "/payment?plan=premium";
-              }}
+              onClick={() => buyPlan("premium")}
               className="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-600/30 transition text-lg"
             >
               Wybieram ten

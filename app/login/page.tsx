@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
-import { sign } from "crypto";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,19 +12,27 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    if (!email || !password || (!isLogin && (!username || !fullName))) {
+    if (!email || !password || (!isLogin && (!username || !fullName || !repeatPassword))) {
       setError("Uzupełnij wszystkie wymagane pola");
+      return;
+    }
+
+    if (!isLogin && password !== repeatPassword) {
+      setError("Hasła nie są takie same");
       return;
     }
 
@@ -44,8 +51,8 @@ export default function LoginPage() {
         }
 
         setSuccess("Zalogowano pomyślnie!");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        router.push("/"); // przekierowanie po zalogowaniu
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        router.push("/"); 
       } else {
         // REJESTRACJA
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
@@ -55,9 +62,20 @@ export default function LoginPage() {
             emailRedirectTo: window.location.origin,
           },
         });
-           
+
         if (signUpError || !signUpData.user) {
           setError(signUpError?.message || "Błąd rejestracji");
+          return;
+        }
+
+        // LOGOWANIE AUTOMATYCZNE
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError || !signInData.session) {
+          setError(signInError?.message || "Nie udało się zalogować po rejestracji");
           return;
         }
 
@@ -78,7 +96,7 @@ export default function LoginPage() {
           return;
         }
 
-        setSuccess("Zarejestrowano pomyślnie! Sprawdź maila i potwierdź konto.");
+        setSuccess("Zarejestrowano pomyślnie! Możesz się teraz zalogować.");
         setIsLogin(true);
       }
     } catch (err) {
@@ -87,15 +105,30 @@ export default function LoginPage() {
     }
   };
 
+  const inputAnimation = { 
+    initial: { opacity: 0, y: 20 }, 
+    animate: { opacity: 1, y: 0 }, 
+    transition: { duration: 0.6 } 
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-neutral-900 to-black text-white px-6">
       {/* HEADER */}
       <nav className="w-full fixed top-0 backdrop-blur-xl bg-black/30 border-b border-white/10 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.h1 initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-2xl font-bold tracking-tight">
+          <motion.h1 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.6 }}
+            className="text-2xl font-bold tracking-tight"
+          >
             <span className="text-blue-500">Ścieżka </span>Umysłu
           </motion.h1>
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }} className="flex items-center gap-6">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }} 
+            className="flex items-center gap-6"
+          >
             <Link href="/" className="hover:text-blue-400 transition font-semibold">Strona główna</Link>
           </motion.div>
         </div>
@@ -110,65 +143,73 @@ export default function LoginPage() {
           className="w-full max-w-md bg-white/5 p-10 rounded-3xl border border-white/10 shadow-xl shadow-blue-600/20 backdrop-blur-lg"
         >
           {/* TOGGLE */}
-          <div className="flex justify-center mb-8">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ duration: 0.6 }} 
+            className="flex justify-center mb-8"
+          >
             <button
-              className={`px-6 py-2 rounded-l-2xl font-semibold transition ${isLogin ? "bg-blue-600 text-white" : "bg-white/10 text-blue-400"}`}
+              className={`px-6 py-2 rounded-l-2xl font-semibold transition ${isLogin ? "bg-blue-600 text-white shadow-lg" : "bg-white/10 text-blue-400"}`}
               onClick={() => { setIsLogin(true); setError(""); setSuccess(""); }}
             >
               Logowanie
             </button>
             <button
-              className={`px-6 py-2 rounded-r-2xl font-semibold transition ${!isLogin ? "bg-blue-600 text-white" : "bg-white/10 text-blue-400"}`}
+              className={`px-6 py-2 rounded-r-2xl font-semibold transition ${!isLogin ? "bg-blue-600 text-white shadow-lg" : "bg-white/10 text-blue-400"}`}
               onClick={() => { setIsLogin(false); setError(""); setSuccess(""); }}
             >
               Rejestracja
             </button>
-          </div>
+          </motion.div>
 
           {/* KOMUNIKATY */}
-          {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-          {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
+          {error && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 mb-4 text-center">{error}</motion.p>}
+          {success && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-500 mb-4 text-center">{success}</motion.p>}
 
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             {!isLogin && (
               <>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                />
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                />
-
+                <motion.input {...inputAnimation} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+                <motion.input {...inputAnimation} type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
               </>
             )}
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            />
-            <button
+            <motion.input {...inputAnimation} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+            <motion.div {...inputAnimation} className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full pr-12"
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 hover:text-white transition">
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </motion.div>
+            {!isLogin && (
+              <motion.div {...inputAnimation} className="relative">
+                <input
+                  type={showRepeatPassword ? "text" : "password"}
+                  placeholder="Powtórz hasło"
+                  value={repeatPassword}
+                  onChange={(e) => setRepeatPassword(e.target.value)}
+                  className="bg-white/10 px-4 py-3 rounded-xl placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full pr-12"
+                />
+                <button type="button" onClick={() => setShowRepeatPassword(!showRepeatPassword)} className="absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 hover:text-white transition">
+                  {showRepeatPassword ? "🙈" : "👁️"}
+                </button>
+              </motion.div>
+            )}
+            <motion.button
+              {...inputAnimation}
               type="submit"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="bg-blue-600 hover:bg-blue-700 transition py-3 rounded-2xl font-semibold shadow-xl shadow-blue-600/40 text-lg"
             >
               {isLogin ? "Zaloguj się" : "Zarejestruj się"}
-            </button>
+            </motion.button>
           </form>
         </motion.div>
       </div>
