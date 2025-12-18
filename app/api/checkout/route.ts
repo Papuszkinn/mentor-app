@@ -6,9 +6,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 const PRICE_MAP: Record<string, string> = {
-  mini: "price_1SajczFMB0ZEMoBJVppibS4H",
-  standard: "price_1Sak6UFMB0ZEMoBJYfiNTML9",
-  premium: "price_1Sak42FMB0ZEMoBJ8zXLY0wO",
+  mini: "price_1SfowZ2WkqRYXh0Hh9T3RA6X",
+  standard: "price_1Sfovm2WkqRYXh0HRVML2jnd",
+  premium: "price_1Sfovm2WkqRYXh0Hbo58vxtQ",
 };
 
 export async function POST(req: NextRequest) {
