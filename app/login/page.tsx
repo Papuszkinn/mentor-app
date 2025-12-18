@@ -79,20 +79,23 @@ export default function LoginPage() {
           return;
         }
 
-        // Dodanie do tabeli profiles
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert({
+        // Dodanie do tabeli profiles przez backend (Service Role)
+        const profileRes = await fetch("@/app/api/createProfile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             id: signUpData.user.id,
             email,
             username,
             full_name: fullName,
             avatar_url: avatarUrl || null,
             role: "user",
-          });
+          }),
+        });
 
-        if (profileError) {
-          setError("Błąd przy tworzeniu profilu: " + profileError.message);
+        const profileData = await profileRes.json();
+        if (profileData.error) {
+          setError("Błąd przy tworzeniu profilu: " + profileData.error);
           return;
         }
 
