@@ -384,7 +384,8 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <footer className="py-16 text-center text-neutral-500 border-t border-white/10">
-        © {new Date().getFullYear()}  Kontakt: <strong>sciezkaumyslu@proton.me</strong> <br> </br>Mentor AI — All rights reserved. 
+        © {new Date().getFullYear()} Mentor AI — All rights reserved. 
+        Kontakt: <strong>sciezkaumyslu@proton.me</strong> 
       </footer>
     </div>
   );
